@@ -8,7 +8,7 @@
 [![Violentmonkey](https://img.shields.io/badge/Violentmonkey-008080?style=for-the-badge&logo=greasemonkey&logoColor=white)](https://violentmonkey.github.io/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)](#)
+[![Version](https://img.shields.io/badge/version-1.1.0-blue?style=for-the-badge)](#)
 [![Maintained by](https://img.shields.io/badge/maintained%20by-%40gtxPrime-8A2BE2?style=for-the-badge)](https://github.com/gtxPrime)
 
 <br/>
@@ -37,11 +37,13 @@ It works entirely **client-side**, in your own browser. Nothing is sent to any s
 
 | Feature | Description |
 |---|---|
-| 🔍 **Auto-detection** | Automatically finds the Ace editor instance inside `.editor-wrapper`, even in SPA apps where it loads late |
-| 🔓 **Read-only unlock** | Calls Ace's own `setReadOnly(false)` API (not just DOM attribute stripping) so the fix actually sticks |
-| 📋 **Paste re-enabler** | Removes blocked `paste`/`copy`/`cut` listeners and restores native clipboard behavior |
-| 🔁 **Persistent** | Re-checks every 2500ms in case the host page tries to re-lock the editor |
-| 🧼 **Zero network calls** | Runs 100% locally; does not touch your account, session, or any remote endpoint |
+| 🔍 **Auto-detection** | Automatically finds the Ace editor instance, even in single-page apps (SPAs) where it loads dynamically |
+| 🔓 **Read-only unlock** | Invokes Ace's native `setReadOnly(false)` API and removes DOM constraints so the changes stick |
+| 📋 **Universal Paste Unblocker** | Bypasses event listener blocks on copy/paste/cut/contextmenu/selectstart/dragstart/drop globally |
+| 🔐 **Prototype Interception** | Intercepts `addEventListener` registrations and inline handlers before page scripts run (`document-start`) |
+| 🎨 **CSS user-select Reset** | Undoes any styling tricks (like `user-select: none` or pointer-events block) to restore selection |
+| 🔁 **Persistent Polling** | Re-applies the editability fix every 2000ms in case host scripts try to re-lock the editor |
+| 🧼 **Zero network calls** | Runs 100% locally; does not touch your account, session, or make any external calls |
 
 ## 📦 Installation
 
@@ -69,14 +71,19 @@ No configuration, no build step, no setup: just install and load the page.
 
 ## 🛠️ How it works
 
-Most "locked" Ace editors aren't actually broken; they're intentionally set to read-only mode via Ace's internal API (`editor.setReadOnly(true)`), and paste events are blocked by a capture-phase event listener somewhere up the DOM tree.
+The userscript consists of two independent parts running at `@run-at document-start` to neutralize blocking mechanisms before they can hook:
 
-This script:
+1. **Universal Paste Unblocker**:
+   - Overrides `EventTarget.prototype.addEventListener` to block page scripts from registering handlers for `paste`, `copy`, `cut`, `contextmenu`, `keydown`, etc.
+   - Restructures prototype setters for inline handlers (`onpaste`, etc.) to make them inert.
+   - Cleans inline event attributes in elements dynamically using a `MutationObserver` and handles loaded `<iframe>` tags.
+   - Injects a global CSS sheet to force `user-select: text !important` on all elements.
+   - Uses capture-phase document listeners to intercept and prevent site cancellation of native paste/copy operations.
 
-1. Locates the live Ace editor instance (`editor.env.editor` or via `window.ace.edit()`).
-2. Flips the internal read-only flag back with Ace's own API, so it doesn't get silently re-applied on the next re-render.
-3. Clones the underlying `<textarea>` to strip any inline blocking listeners.
-4. Installs a capture-phase guard on `paste` / `copy` / `cut` so no ancestor element can intercept the event first.
+2. **Ace Editor Unlocker**:
+   - Locates active Ace editor instances by checking wrapper class elements (`.ace_editor`), associated DOM property registries, or the global `window.ace` registry.
+   - Removes `readonly` and `aria-disabled` attributes from the hidden textarea (`.ace_text-input`).
+   - Periodically polls to keep read-only mode disabled if page scripts attempt to re-lock it.
 
 ## 📁 File Structure
 
