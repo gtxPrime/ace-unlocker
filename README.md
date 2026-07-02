@@ -19,19 +19,19 @@
 
 </div>
 
----
+> [!WARNING]
+> ## ⚠️ Critical Disclaimer & Usage Warning
+> This project was built strictly for **educational and learning purposes** to understand how Ace Editor's read-only state and clipboard event handling work under the hood. 
+> 
+> * **Client-Side Only**: This script only modifies the local rendering of a webpage in your own browser. It does **not** interact with any backend, submit any data, bypass remote validation, or alter anything server-side.
+> * **Ethical Use**: Use responsibly. This tool is meant for personal sandboxes, editors you own, or practice environments. Do **NOT** use it to bypass integrity controls on live exams, assessments, interviews, or graded tasks.
+> * **No Liability**: This script is provided **"as is"** with no warranty of any kind. The author (**@gtxPrime**) takes no responsibility and is not liable for any misuse, consequences, account suspensions, or violations of third-party terms of service resulting from the use of this script. **Use entirely at your own risk.**
 
 ## ✨ What is this?
 
 A lightweight Tampermonkey/Violentmonkey userscript that fixes **locked Ace editors**; the kind you'll find embedded in coding platforms, sandboxes, and internal tools; when the page has disabled editing or pasting.
 
 It works entirely **client-side**, in your own browser. Nothing is sent to any server, and no submit/save action is ever triggered. It simply restores your local view of the editor so you can keep reading, testing, and pasting into it.
-
-> ⚠️ **Use responsibly.** This tool is meant for editors you own, personal sandboxes, or practice environments where no live grading/anti-cheat policy applies. Don't use it to bypass integrity controls on a live exam, assessment, or interview.
-
-> 🚧 **Caution: Use at your own risk.** This project was built strictly for **educational and learning purposes** to understand how Ace Editor's read-only state and clipboard event handling work under the hood. The author (**@gtxPrime**) takes no responsibility for any misuse, consequences, or violations of third-party terms of service resulting from the use of this script. Use it ethically and only on systems/editors you have the right to modify.
-
----
 
 ## 🧩 Features
 
@@ -42,8 +42,6 @@ It works entirely **client-side**, in your own browser. Nothing is sent to any s
 | 📋 **Paste re-enabler** | Removes blocked `paste`/`copy`/`cut` listeners and restores native clipboard behavior |
 | 🔁 **Persistent** | Re-checks every 2500ms in case the host page tries to re-lock the editor |
 | 🧼 **Zero network calls** | Runs 100% locally; does not touch your account, session, or any remote endpoint |
-
----
 
 ## 📦 Installation
 
@@ -58,8 +56,6 @@ To use this userscript, you must first install a userscript manager browser exte
      👉 **[Direct Install Link](https://raw.githubusercontent.com/gtxPrime/ace-unlocker/main/ace-unlocker.user.js)**
    - Your userscript manager will automatically open a tab prompting you to click **Install**.
 
----
-
 ## 🚀 Usage
 
 1. Navigate to the page containing your locked Ace editor.
@@ -70,8 +66,6 @@ To use this userscript, you must first install a userscript manager browser exte
 4. If the page tries to re-lock the editor later (e.g. on a timer), the script will silently unlock it again in the background.
 
 No configuration, no build step, no setup: just install and load the page.
-
----
 
 ## 🛠️ How it works
 
@@ -84,8 +78,6 @@ This script:
 3. Clones the underlying `<textarea>` to strip any inline blocking listeners.
 4. Installs a capture-phase guard on `paste` / `copy` / `cut` so no ancestor element can intercept the event first.
 
----
-
 ## 📁 File Structure
 
 ```
@@ -94,21 +86,9 @@ ace-unlocker/
 └── README.md              # You're here
 ```
 
----
-
-## ⚠️ Disclaimer
-
-This project modifies the local rendering of a webpage in your own browser only. It does not interact with any backend, submit any data, or alter anything on the server side. It is intended for use on editors you own or control, or in non-graded practice/sandbox environments.
-
-This script is provided **"as is," for educational and learning purposes only**, with no warranty of any kind. **Use at your own risk.** The author (**@gtxPrime**) is not liable for any misuse, damages, or policy violations arising from its use. You are solely responsible for how and where you use it, and for complying with the terms of service of any website you use it on.
-
----
-
 ## 📈 Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=gtxPrime/ace-unlocker&type=Date)](https://star-history.com/#gtxPrime/ace-unlocker&Date)
-
----
 
 <div align="center">
 
